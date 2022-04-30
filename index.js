@@ -3,6 +3,8 @@ const app = express()
 const port = process.env.PORT || 5000;
 const cors = require('cors')
 require('dotenv').config()
+const jwt = require('jsonwebtoken');
+
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 app.use(cors())
@@ -19,7 +21,18 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
   try {
     await client.connect();
-    const inventoryCollection = client.db('inventoriesdb').collection('stocks')
+    const inventoryCollection = client.db('inventoriesdb').collection('stocks');
+    const deleveryCollection = client.db('inventoriesdb').collection('deleveredStocks');
+
+
+
+    app.post('/login', (req, res) =>{
+      const email = req.body;
+      const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET);
+      res.send({token});
+    })
+
+
 
     app.get('/inventories', async (req, res) => {
       const query = {};
@@ -27,6 +40,7 @@ async function run() {
       const inventories = await cursor.toArray();
       res.send(inventories)
     })
+
 
     // (find one document) 
     // app.get('/inventories/:id'), async (req, res)=>{
@@ -59,13 +73,26 @@ async function run() {
         res.send(result);
     });
 
-
+    app.post('/delivered', async (req, res) =>{
+      const orderInfo = req.body;
+      const result = await deleveryCollection.insertOne(orderInfo);
+      res.send({success: 'Inventory Delevered'})
+    });
+    
 
       // add new stocks to mongodb
       app.post('/addInventories', async (req, res)=>{
         const newInventories = req.body;
-        const result = await inventoryCollection.insertOne(newInventories);
-        res.send({result});
+        const tokenInfo = req.headers.authorization;
+        const [email, accessToken] = tokenInfo.split(" ")
+        const decoded = verifyToken(accessToken);
+        if(email === decoded.email){
+          const result = await inventoryCollection.insertOne(newInventories);
+          res.send({result});
+        }
+        else{
+          res.send({success: "Unauthoraized Access"})
+        }
       })
 
     })
@@ -85,3 +112,17 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+function verifyToken(token) {
+  let email;
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err, decoded){
+    if(err){
+      email = 'Invalid Email'
+    }
+    if(decoded){
+      console.log(decoded)
+      email = decoded;
+    }
+  });
+  return email;
+}
