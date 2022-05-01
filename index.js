@@ -29,6 +29,7 @@ async function run() {
 
     app.post("/login", (req, res) =>{
       const email = req.body;
+      console.log('abc',email)
 
       const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET);
 
@@ -39,17 +40,17 @@ async function run() {
      // add new stocks to mongodb
      app.post('/addInventories', async (req, res)=>{
       const newInventories = req.body;
-      const tokenInfo = req.headers.authorization;
-      console.log(tokenInfo, 'from when login')
-      const [email, accessToken] = tokenInfo.split(" ")
-      const decoded = verifyToken(accessToken)
-      if(email === decoded?.email){
+      // const tokenInfo = req.headers.authorization;
+      // console.log(tokenInfo, 'from when login')
+      // const [email, accessToken] = tokenInfo.split(" ")
+      // const decoded = verifyToken(accessToken)
+      // if(email === decoded?.email){
         const result = await inventoryCollection.insertOne(newInventories);
         res.send({ success: 'Product Upload Successfully' })
-      }
-      else{
-        res.send({success: "Unauthoraized Access"})
-      }
+      // }
+      // else{
+        // res.send({success: "Unauthoraized Access"})
+      // }
     })
 
 
@@ -102,6 +103,28 @@ async function run() {
       }
     })
 
+    // update 
+    app.put('/inventorie/:id',async (req, res)=>{
+      const id = req.params.id;
+      const data = req.body;
+      console.log('from put' ,data);
+      const filter = { _id: ObjectId(id)};
+      const options = { upsert: true };
+      const updateDoc = {
+          $set: {
+            name: data.name, 
+            quantity : data.quantity
+
+          },
+        };
+      const result = await inventoryCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+
+
+
+
+  })
+
     // (find one document) 
     // app.get('/inventories/:id'), async (req, res)=>{
     //   const id = req.params.id;
@@ -125,7 +148,7 @@ async function run() {
       //   const result = await inventoryCollection.deleteOne(query);
       //   res.send(result);
       // })
-      
+
       app.delete('/service/:id', async(req, res)=>{
         const id = req.params.id;
         const query = {_id: ObjectId(id)};
