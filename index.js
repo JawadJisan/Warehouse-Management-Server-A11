@@ -68,6 +68,22 @@ async function run() {
       res.send({success: 'Inventory Delevered'})
     });
 
+    // delivered using name
+    app.post('/deliveredNAME', async (req, res) =>{
+      const orderInfo = req.body;
+      const result = await deleveryCollection.insertOne(orderInfo);
+      res.send(result)
+    });
+
+    // get delivered using user name
+    app.get('/getdeliveredNAME', async (req, res)=>{
+      const email = req.query.email;
+      const query = {email:email};
+      const cursor = deleveryCollection.find(query);
+      const inventories = await cursor.toArray();
+      res.send(inventories)
+    })
+
     // get the partners
     app.get('/partners', async (req, res)=>{
       const query = {};
@@ -191,7 +207,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on new port ${port}`)
 })
 
 function verifyToken(token) {
