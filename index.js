@@ -103,6 +103,12 @@ async function run() {
       }
     })
 
+    /* -------------- */
+    app.get("/myCollectedStocks", async(req, res) =>{
+        const deleveredStocks = await deleveryCollection.find({}).toArray();
+        res.send(deleveredStocks);
+    })
+
     // update 
     app.put('/inventorie/:id',async (req, res)=>{
       const id = req.params.id;
@@ -155,6 +161,16 @@ async function run() {
         const result = await inventoryCollection.deleteOne(query);
         res.send(result);
     });
+    
+    app.delete('/myItems/:id',async(req, res)=>{
+      const id= req.params.id;
+      const filter = { _id: ObjectId(id)};
+      const result = await deleveryCollection.deleteOne(filter);
+      res.send(result);
+
+
+
+  })
          
     })
 
