@@ -109,6 +109,18 @@ async function run() {
         res.send(deleveredStocks);
     })
 
+
+    // delet
+    app.delete('/myItems/:id',async(req, res)=>{
+      const id= req.params.id;
+      const filter = { _id: ObjectId(id)};
+      const result = await deleveryCollection.deleteOne(filter);
+      res.send(result);
+
+
+
+  })
+
     // update 
     app.put('/inventorie/:id',async (req, res)=>{
       const id = req.params.id;
@@ -162,15 +174,7 @@ async function run() {
         res.send(result);
     });
     
-    app.delete('/myItems/:id',async(req, res)=>{
-      const id= req.params.id;
-      const filter = { _id: ObjectId(id)};
-      const result = await deleveryCollection.deleteOne(filter);
-      res.send(result);
-
-
-
-  })
+ 
          
     })
 
