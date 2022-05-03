@@ -99,6 +99,21 @@ async function run() {
     })
 
 
+      // get delivered using user email when user first register and then login >> then he will see his delivered items
+      app.get('/getdelivered', verifyJWT, async (req, res)=>{
+        const decodedEmail = req.decoded.email;
+        const email = req.query.email;
+       if(email === decodedEmail){
+        const query = {email:email};
+        const cursor = deleveryCollection.find(query);
+        const inventories = await cursor.toArray();
+        res.send(inventories)
+       }
+       else{
+         res.status(403).send({message: "Forbidden Access"});
+       }
+      })
+
     // delivered using name
     app.post('/deliveredNAME', async (req, res) =>{
       const orderInfo = req.body;
@@ -106,7 +121,7 @@ async function run() {
       res.send(result)
     });
 
-    // get delivered using user name
+    // get delivered using user email when user first register and then login >> then he will see his delivered items
     app.get('/getdeliveredNAME', verifyJWT, async (req, res)=>{
       const decodedEmail = req.decoded.email;
       const email = req.query.email;
@@ -246,17 +261,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on new port ${port}`)
 })
-
-function verifyToken(token) {
-  let email;
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
-      if (err) {
-          email = 'Invalid email'
-      }
-      if (decoded) {
-          console.log(decoded)
-          email = decoded
-      }
-  });
-  return email;
-}
