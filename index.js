@@ -185,25 +185,38 @@ async function run() {
   })
 
     // update 
+  //   app.put('/inventorie/:id',async (req, res)=>{
+  //     const id = req.params.id;
+  //     const data = req.body;
+  //     console.log('from put' ,data);
+  //     const filter = { _id: ObjectId(id)};
+  //     const options = { upsert: true };
+  //     const updateDoc = {
+  //         $set: {
+  //           name: data.name, 
+  //           quantity : data.quantity
+
+  //         },
+  //       };
+  //     const result = await inventoryCollection.updateOne(filter, updateDoc, options);
+  //     res.send(result);
+  // })
+
     app.put('/inventorie/:id',async (req, res)=>{
       const id = req.params.id;
-      const data = req.body;
-      console.log('from put' ,data);
+      const newQ = req.body.quantity;
+      // const data = req.body;
+      console.log('from put' ,newQ);
       const filter = { _id: ObjectId(id)};
       const options = { upsert: true };
       const updateDoc = {
           $set: {
-            name: data.name, 
-            quantity : data.quantity
+            quantity : newQ
 
           },
         };
       const result = await inventoryCollection.updateOne(filter, updateDoc, options);
       res.send(result);
-
-
-
-
   })
 
     // (find one document) 
