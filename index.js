@@ -38,20 +38,11 @@ async function run() {
 
 
      // add new stocks to mongodb
-     /* ** */
      app.post('/addInventories', async (req, res)=>{
       const newInventories = req.body;
-      // const tokenInfo = req.headers.authorization;
-      // console.log(tokenInfo, 'from when login')
-      // const [email, accessToken] = tokenInfo.split(" ")
-      // const decoded = verifyToken(accessToken)
-      // if(email === decoded?.email){
+      
         const result = await inventoryCollection.insertOne(newInventories);
         res.send({ success: 'Product Upload Successfully' })
-      // }
-      // else{
-        // res.send({success: "Unauthoraized Access"})
-      // }
     })
 
 
