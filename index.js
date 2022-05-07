@@ -38,6 +38,7 @@ async function run() {
 
 
      // add new stocks to mongodb
+     /* ** */
      app.post('/addInventories', async (req, res)=>{
       const newInventories = req.body;
       // const tokenInfo = req.headers.authorization;
@@ -54,6 +55,7 @@ async function run() {
     })
 
 
+    /* ** */
     app.get('/inventories', async (req, res) => {
       const query = {};
       const cursor = inventoryCollection.find(query);
@@ -61,7 +63,7 @@ async function run() {
       res.send(inventories)
     })
 
-    
+    /* ** */
     app.post('/delivered', async (req, res) =>{
       const orderInfo = req.body;
       const result = await deleveryCollection.insertOne(orderInfo);
@@ -114,6 +116,7 @@ async function run() {
        }
       })
 
+      
     // delivered using name
     app.post('/deliveredNAME', async (req, res) =>{
       const orderInfo = req.body;
@@ -137,6 +140,7 @@ async function run() {
     })
 
     // get the partners
+    /* ** */
     app.get('/partners', async (req, res)=>{
       const query = {};
       const cursor = partnersCollection.find(query);
