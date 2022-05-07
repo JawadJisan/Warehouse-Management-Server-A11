@@ -46,6 +46,7 @@ async function run() {
     })
 
 
+    
     /* ** */
     app.get('/inventories', async (req, res) => {
       const query = {};
