@@ -46,7 +46,7 @@ async function run() {
     })
 
 
-    
+
     /* ** */
     app.get('/inventories', async (req, res) => {
       const query = {};
@@ -74,7 +74,7 @@ async function run() {
         if(err){
           return res.status(403).send({message: 'Forbideen Access'});
         }
-        console.log('decodec', decoded);
+        // console.log('decodec', decoded);
         req.decoded = decoded;
         next();
       })
@@ -86,6 +86,7 @@ async function run() {
     ///* jwt *////
     app.post('/getToken', async(req, res)=>{
       const user = req.body;
+      console.log(user)
       const accessToken = jwt.sign(user, process.env.NEW_ACCESS_TOKEN,{
         expiresIn: '1d'
       });
@@ -116,6 +117,7 @@ async function run() {
       res.send(result)
     });
 
+    
     // get delivered using user email when user first register and then login >> then he will see his delivered items
     app.get('/getdeliveredNAME', verifyJWT, async (req, res)=>{
       const decodedEmail = req.decoded.email;
@@ -155,10 +157,12 @@ async function run() {
 
       console.log('GET DELIVERED ITEMS CONSOLE TOKEN',tokenInfo);
       const [email, accessToken] = tokenInfo.split(" ")
-      console.log(email, accessToken)
+      // console.log(email, accessToken)
 
-      const decoded = verifyToken(accessToken)
-      if(email === decoded.email) {
+      // const decoded = verifyToken(accessToken)
+      // const decoded = verifyJWT(accessToken)
+      // if(email === decoded.email) {
+      if(email) {
         const deleveredStocks = await deleveryCollection.find({email:email}).toArray();
         res.send(deleveredStocks);
       }
