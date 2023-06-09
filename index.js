@@ -36,7 +36,9 @@ async function run() {
       res.send({token});
     })
 
-
+/* 
+route is not working
+*/
      // add new stocks to mongodb
      app.post('/addInventories', async (req, res)=>{
       const newInventories = req.body;
