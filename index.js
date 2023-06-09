@@ -255,6 +255,9 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
   res.send('Hello World! I missed the Batch Ifter party Because of This Assignment?? But what allah done is the best for me?? Happy Coding')
 })
+app.get('/hello', (req, res) => {
+  res.send('lorem')
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on new port ${port}`)
